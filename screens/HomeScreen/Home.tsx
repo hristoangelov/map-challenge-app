@@ -1,19 +1,25 @@
-
 import React from "react";
-import { Text, View } from 'react-native';
+import { Dimensions, Platform, View } from "react-native";
+import MapView, { PROVIDER_GOOGLE, PROVIDER_DEFAULT } from "react-native-maps";
 import styled from "styled-components";
 
 const HomeWrapper = styled(View)`
-    flex: 1;
-    background-color: #fff;
-    align-items: center;
-    justify-content: center;
-  `
+  flex: 1;
+`;
+
+const StyledMapView = styled(MapView)`
+  width: ${Dimensions.get("window").width}px;
+  height: ${Dimensions.get("window").height}px;
+`;
 
 export const Home = () => {
   return (
     <HomeWrapper>
-      <Text>Open up App.tsx to start on your app!</Text>
+      <StyledMapView
+        provider={
+          Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+        }
+      ></StyledMapView>
     </HomeWrapper>
   );
 };

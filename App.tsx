@@ -1,52 +1,88 @@
 import { StatusBar } from "expo-status-bar";
-import { TouchableOpacity } from "react-native";
-import styled from "styled-components";
-import { createStackNavigator } from "@react-navigation/stack";
-import Ionicons from "@expo/vector-icons/Ionicons";
+// import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { Home } from "./screens/HomeScreen/Home";
+import { CustomHeaderButton } from "./components/Home";
+import * as React from "react";
+import { View, Text } from "react-native";
 
-const Stack = createStackNavigator();
-
-const HeaderButton = styled(TouchableOpacity)<{ isRightButton: boolean }>`
-  margin-${(props) => (props.isRightButton ? "right" : "left")}: 12px;
-`;
-
-function HomeStack() {
+function RightDrawerContent() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen
+    <View>
+      <Text>right drawer</Text>
+    </View>
+  );
+}
+
+const LeftDrawer = createDrawerNavigator();
+
+function SettingsScreen() {
+  return (
+    <View>
+      <Text>Settings screen</Text>
+    </View>
+  );
+}
+
+function LeftDrawerScreen({navigation}: any) {
+  return (
+    <LeftDrawer.Navigator
+      id="LeftDrawer"
+      screenOptions={{ drawerPosition: "left" }}
+    >
+      <LeftDrawer.Screen
         name="Home"
         component={Home}
-        options={({ navigation }) => ({
-          headerLeft: () => (
-            <HeaderButton
-              isRightButton={false}
-              onPress={() => navigation.navigate("Profile")}
-            >
-              <Ionicons name="menu-outline" size={24} />
-            </HeaderButton>
-          ),
+        options={() => ({
           headerRight: () => (
-            <HeaderButton
+            <CustomHeaderButton
               isRightButton={true}
-              onPress={() => navigation.navigate("Profile")}
-            >
-              <Ionicons name="funnel-outline" size={24} />
-            </HeaderButton>
+              iconName="funnel-outline"
+              onPress={() => navigation.openDrawer()}
+            />
           ),
         })}
       />
-    </Stack.Navigator>
+            <LeftDrawer.Screen
+        name="Settings"
+        component={SettingsScreen}
+        options={() => ({
+          headerRight: () => (
+            <CustomHeaderButton
+              isRightButton={true}
+              iconName="funnel-outline"
+              onPress={() => navigation.openDrawer()}
+            />
+          ),
+        })}
+      />
+    </LeftDrawer.Navigator>
+  );
+}
+
+const RightDrawer = createDrawerNavigator();
+
+function RightDrawerScreen({navigation}: any) {
+  return (
+    <RightDrawer.Navigator
+      id="RightDrawer"
+      drawerContent={(props) => <RightDrawerContent />}
+      screenOptions={{
+        drawerPosition: 'right',
+        headerShown: false,
+      }}
+    >
+      <RightDrawer.Screen name="HomeDrawer" component={LeftDrawerScreen} />
+    </RightDrawer.Navigator>
   );
 }
 
 export default function App() {
   return (
     <NavigationContainer>
-      <StatusBar />
-      <HomeStack />
+      <RightDrawerScreen />
     </NavigationContainer>
   );
 }
