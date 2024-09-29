@@ -1,32 +1,16 @@
-import { StatusBar } from "expo-status-bar";
-// import { createStackNavigator } from "@react-navigation/stack";
+import * as React from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
-import { Home } from "./screens/HomeScreen/Home";
+import { HomeScreen } from "./screens/HomeScreen";
+import { SettingsScreen } from "./screens/SettingsScreen";
 import { CustomHeaderButton } from "./components/Home";
-import * as React from "react";
-import { View, Text } from "react-native";
-
-function RightDrawerContent() {
-  return (
-    <View>
-      <Text>right drawer</Text>
-    </View>
-  );
-}
+import { RightDrawerContent } from "./components/RightDrawerContent";
 
 const LeftDrawer = createDrawerNavigator();
+const RightDrawer = createDrawerNavigator();
 
-function SettingsScreen() {
-  return (
-    <View>
-      <Text>Settings screen</Text>
-    </View>
-  );
-}
-
-function LeftDrawerScreen({navigation}: any) {
+function LeftDrawerScreen({ navigation }: any) {
   return (
     <LeftDrawer.Navigator
       id="LeftDrawer"
@@ -34,7 +18,7 @@ function LeftDrawerScreen({navigation}: any) {
     >
       <LeftDrawer.Screen
         name="Home"
-        component={Home}
+        component={HomeScreen}
         options={() => ({
           headerRight: () => (
             <CustomHeaderButton
@@ -45,7 +29,7 @@ function LeftDrawerScreen({navigation}: any) {
           ),
         })}
       />
-            <LeftDrawer.Screen
+      <LeftDrawer.Screen
         name="Settings"
         component={SettingsScreen}
         options={() => ({
@@ -62,15 +46,13 @@ function LeftDrawerScreen({navigation}: any) {
   );
 }
 
-const RightDrawer = createDrawerNavigator();
-
-function RightDrawerScreen({navigation}: any) {
+function RightDrawerScreen({ navigation }: any) {
   return (
     <RightDrawer.Navigator
       id="RightDrawer"
       drawerContent={(props) => <RightDrawerContent />}
       screenOptions={{
-        drawerPosition: 'right',
+        drawerPosition: "right",
         headerShown: false,
       }}
     >
