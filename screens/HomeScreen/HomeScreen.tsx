@@ -1,14 +1,12 @@
 import React from "react";
 import { ActivityIndicator, Text, Platform } from "react-native";
-import {
-  PROVIDER_GOOGLE,
-  PROVIDER_DEFAULT,
-  Marker,
-  Region,
-} from "react-native-maps";
+import { useDispatch } from "react-redux";
+import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
 import { HomeWrapper, StyledMapView } from "./styles";
 import { Pin } from "../../types";
 import { CustomMarker } from "../../components/Home";
+import { loadSettings } from "../../features/settingsSlice";
+import { AppDispatch } from "../../app/store";
 
 export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
@@ -21,6 +19,11 @@ export const HomeScreen = () => {
     longitudeDelta: 5.0,
   };
   const [mapRegion, setMapRegion] = React.useState<Region>(initialRegion);
+  const dispatch = useDispatch<AppDispatch>();
+
+  React.useLayoutEffect(() => {
+    dispatch(loadSettings());
+  }, [dispatch]);
 
   React.useEffect(() => {
     fetch("http://localhost:3000/pins")
