@@ -1,4 +1,5 @@
 import * as React from "react";
+import { Provider } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
@@ -6,6 +7,7 @@ import { HomeScreen } from "./screens/HomeScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { CustomHeaderButton } from "./components/Home";
 import { RightDrawerContent } from "./components/RightDrawerContent";
+import { store } from "./app/store";
 
 const LeftDrawer = createDrawerNavigator();
 const RightDrawer = createDrawerNavigator();
@@ -46,11 +48,11 @@ function LeftDrawerScreen({ navigation }: any) {
   );
 }
 
-function RightDrawerScreen({ navigation }: any) {
+function RightDrawerScreen() {
   return (
     <RightDrawer.Navigator
       id="RightDrawer"
-      drawerContent={(props) => <RightDrawerContent />}
+      drawerContent={() => <RightDrawerContent />}
       screenOptions={{
         drawerPosition: "right",
         headerShown: false,
@@ -63,8 +65,10 @@ function RightDrawerScreen({ navigation }: any) {
 
 export default function App() {
   return (
-    <NavigationContainer>
-      <RightDrawerScreen />
-    </NavigationContainer>
+    <Provider store={store}>
+      <NavigationContainer>
+        <RightDrawerScreen />
+      </NavigationContainer>
+    </Provider>
   );
 }

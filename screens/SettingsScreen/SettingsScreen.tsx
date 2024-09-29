@@ -1,19 +1,16 @@
 import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Slider from "@react-native-community/slider";
-import Ionicons from "@expo/vector-icons/Ionicons";
-import { PinIconItem } from "../../components/Settings";
-import {
-  SettingsWrapper,
-  Subheader,
-  SelectorRow,
-  StyledIcon,
-  ColourButton,
-} from "./styles";
+import { SettingsWrapper, Subheader, SelectorRow, StyledIcon } from "./styles";
+import { PinColourItem, PinIconItem } from "../../components/Settings";
+import { AppDispatch, RootState } from "../../app/store";
+import { setPinSize } from "../../features/settingsSlice";
 
 export const SettingsScreen = () => {
-  const [sizeValue, setSizeValue] = React.useState<number>(30);
-  const [iconName, setIconName] =
-    React.useState<keyof typeof Ionicons.glyphMap>("pin-outline");
+  const dispatch = useDispatch<AppDispatch>();
+  const pinIcon = useSelector((state: RootState) => state.settings.pinIcon);
+  const pinColour = useSelector((state: RootState) => state.settings.pinColour);
+  const pinSize = useSelector((state: RootState) => state.settings.pinSize);
 
   return (
     <SettingsWrapper>
@@ -32,24 +29,24 @@ export const SettingsScreen = () => {
       </SelectorRow>
       <Subheader>Select Pin Colour:</Subheader>
       <SelectorRow>
-        <ColourButton colour={"black"} />
-        <ColourButton colour={"white"} />
-        <ColourButton colour={"blue"} />
-        <ColourButton colour={"orange"} />
+        <PinColourItem colour={"black"} />
+        <PinColourItem colour={"red"} />
+        <PinColourItem colour={"blue"} />
+        <PinColourItem colour={"orange"} />
       </SelectorRow>
       <SelectorRow isLastRow={true}>
-        <ColourButton colour={"cyan"} />
-        <ColourButton colour={"lightcoral"} />
-        <ColourButton colour={"purple"} />
-        <ColourButton colour={"red"} />
+        <PinColourItem colour={"cyan"} />
+        <PinColourItem colour={"lightcoral"} />
+        <PinColourItem colour={"purple"} />
+        <PinColourItem colour={"grey"} />
       </SelectorRow>
       <Subheader>Select Pin Size:</Subheader>
-      <StyledIcon name={iconName} size={sizeValue} color={"red"} />
+      <StyledIcon name={pinIcon} size={pinSize} color={pinColour} />
       <Slider
         minimumValue={30}
         maximumValue={70}
         step={1}
-        onValueChange={(e) => setSizeValue(e)}
+        onValueChange={(size) => dispatch(setPinSize(size))}
       />
     </SettingsWrapper>
   );

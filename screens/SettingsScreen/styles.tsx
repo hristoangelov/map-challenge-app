@@ -27,11 +27,3 @@ export const StyledIcon = styled(Ionicons)`
   text-align: center;
   margin-bottom: 8px;
 `;
-
-export const ColourButton = styled(TouchableOpacity)<{ colour: string }>`
-  border: 1px solid black;
-  border-radius: 25px;
-  width: 45px;
-  height: 45px;
-  background-color: ${(props) => props.colour};
-`;
