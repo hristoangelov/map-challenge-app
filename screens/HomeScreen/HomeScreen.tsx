@@ -7,11 +7,7 @@ import {
   Region,
 } from "react-native-maps";
 import { HomeWrapper, StyledMapView } from "./styles";
-
-type Pin = {
-  latitude: string;
-  longitude: string;
-};
+import { Pin } from "../../types";
 
 export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
@@ -90,8 +86,9 @@ export const HomeScreen = () => {
                 latitude: parseFloat(pin.latitude),
                 longitude: parseFloat(pin.longitude),
               }}
-              title="location"
-              description="I am here"
+              // title={pin.title}
+              // description="I am here"
+              onPress={() => console.log("---here")}
             />
           ))}
       </StyledMapView>
