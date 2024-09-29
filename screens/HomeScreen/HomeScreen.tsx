@@ -8,6 +8,7 @@ import {
 } from "react-native-maps";
 import { HomeWrapper, StyledMapView } from "./styles";
 import { Pin } from "../../types";
+import { CustomMarker } from "../../components/Home";
 
 export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
@@ -19,9 +20,7 @@ export const HomeScreen = () => {
     latitudeDelta: 5.0,
     longitudeDelta: 5.0,
   };
-  const [mapRegion, setMapRegion] = React.useState<Region>(
-    initialRegion
-  );
+  const [mapRegion, setMapRegion] = React.useState<Region>(initialRegion);
 
   React.useEffect(() => {
     fetch("http://localhost:3000/pins")
@@ -80,16 +79,7 @@ export const HomeScreen = () => {
       >
         {filteredMarkers &&
           filteredMarkers.map((pin, index) => (
-            <Marker
-              key={index}
-              coordinate={{
-                latitude: parseFloat(pin.latitude),
-                longitude: parseFloat(pin.longitude),
-              }}
-              // title={pin.title}
-              // description="I am here"
-              onPress={() => console.log("---here")}
-            />
+            <CustomMarker key={index} pin={pin} />
           ))}
       </StyledMapView>
     </HomeWrapper>
