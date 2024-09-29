@@ -46,6 +46,7 @@ export const SettingsScreen = () => {
         minimumValue={30}
         maximumValue={70}
         step={1}
+        value={pinSize || 30}
         onValueChange={(size) => dispatch(setPinSize(size))}
       />
     </SettingsWrapper>

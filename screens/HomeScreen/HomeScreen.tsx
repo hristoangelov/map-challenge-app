@@ -1,17 +1,22 @@
 import React from "react";
-import { ActivityIndicator, Text, Platform } from "react-native";
+import { ActivityIndicator, Text, Platform, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
+import BottomSheet from "@gorhom/bottom-sheet";
+
 import { HomeWrapper, StyledMapView } from "./styles";
 import { Pin } from "../../types";
-import { CustomMarker } from "../../components/Home";
+import { CustomMarker, PinBottomSheet } from "../../components/Home";
 import { loadSettings } from "../../features/settingsSlice";
 import { AppDispatch } from "../../app/store";
+import { isPinWithinBounds } from "../../utils";
 
 export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [selectedPin, setSelectedPin] = React.useState<Pin>();
+  const bottomSheetRef = React.useRef<BottomSheet>(null);
   const initialRegion: Region = {
     latitude: 42.7339,
     longitude: 25.4858,
@@ -43,25 +48,15 @@ export const HomeScreen = () => {
       });
   }, []);
 
-  const isPinWithinBounds = React.useCallback((pin: Pin, region: Region) => {
-    const lat = parseFloat(pin.latitude);
-    const lng = parseFloat(pin.longitude);
-
-    const latInRange =
-      lat >= region.latitude - region.latitudeDelta / 2 &&
-      lat <= region.latitude + region.latitudeDelta / 2;
-
-    const lngInRange =
-      lng >= region.longitude - region.longitudeDelta / 2 &&
-      lng <= region.longitude + region.longitudeDelta / 2;
-
-    return latInRange && lngInRange;
-  }, []);
-
   const filteredMarkers = React.useMemo(() => {
     if (!data || !mapRegion) return [];
     return data.filter((pin) => isPinWithinBounds(pin, mapRegion));
-  }, [data, mapRegion, isPinWithinBounds]);
+  }, [data, mapRegion]);
+
+  const onPinPress = (pin: Pin) => {
+    bottomSheetRef.current?.expand();
+    setSelectedPin(pin);
+  };
 
   if (loading) {
     return <ActivityIndicator size="large" color="#0000ff" />;
@@ -82,9 +77,21 @@ export const HomeScreen = () => {
       >
         {filteredMarkers &&
           filteredMarkers.map((pin, index) => (
-            <CustomMarker key={index} pin={pin} />
+            <CustomMarker
+              key={index}
+              pin={pin}
+              onPress={() => onPinPress(pin)}
+            />
           ))}
       </StyledMapView>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={-1}
+        snapPoints={["50%"]}
+        enablePanDownToClose={true}
+      >
+        <PinBottomSheet pin={selectedPin} />
+      </BottomSheet>
     </HomeWrapper>
   );
 };

@@ -7,9 +7,10 @@ import { RootState } from "../../app/store";
 
 interface CustomMarkerProps {
   pin: Pin;
+  onPress: () => void;
 }
 
-export const CustomMarker = ({ pin }: CustomMarkerProps) => {
+export const CustomMarker = ({ pin, onPress }: CustomMarkerProps) => {
   const pinColour = useSelector((state: RootState) => state.settings.pinColour);
   const pinIcon = useSelector((state: RootState) => state.settings.pinIcon);
   const pinSize = useSelector((state: RootState) => state.settings.pinSize);
@@ -20,9 +21,7 @@ export const CustomMarker = ({ pin }: CustomMarkerProps) => {
         latitude: parseFloat(pin.latitude),
         longitude: parseFloat(pin.longitude),
       }}
-      // title={pin.title}
-      // description="I am here"
-      onPress={() => console.log("---here")}
+      onPress={onPress}
     >
       <Ionicons name={pinIcon} size={pinSize} color={pinColour} />
     </Marker>
