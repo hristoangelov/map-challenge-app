@@ -16,7 +16,7 @@ function LeftDrawerScreen({ navigation }: any) {
   return (
     <LeftDrawer.Navigator
       id="LeftDrawer"
-      screenOptions={{ drawerPosition: "left" }}
+      screenOptions={{ drawerPosition: "left", swipeEnabled: false }}
     >
       <LeftDrawer.Screen
         name="Home"
@@ -56,6 +56,7 @@ function RightDrawerScreen() {
       screenOptions={{
         drawerPosition: "right",
         headerShown: false,
+        swipeEnabled: false,
       }}
     >
       <RightDrawer.Screen name="HomeDrawer" component={LeftDrawerScreen} />
