@@ -1,10 +1,10 @@
 import React from "react";
-import { ActivityIndicator, Text, Platform, View } from "react-native";
+import { ActivityIndicator, Text, Platform, View, Alert } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
 import BottomSheet from "@gorhom/bottom-sheet";
-import { useNetInfo } from "@react-native-community/netinfo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import NetInfo from "@react-native-community/netinfo";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
@@ -22,7 +22,8 @@ import { isPinWithinBounds } from "../../utils";
 export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
   const [loading, setLoading] = React.useState(true);
-  const [error, setError] = React.useState(null);
+  const [networkRequestFailed, setNetworkRequestFailed] =
+    React.useState<boolean>(false);
   const [asyncMarkers, setAsyncMarkers] = React.useState<[]>([]);
   const [selectedPin, setSelectedPin] = React.useState<Pin>();
   const bottomSheetRef = React.useRef<BottomSheet>(null);
@@ -40,7 +41,6 @@ export const HomeScreen = () => {
   const connectorStatuses = useSelector(
     (state: RootState) => state.filter.connectorStatuses
   );
-  const netInfo = useNetInfo();
 
   React.useLayoutEffect(() => {
     dispatch(loadSettings());
@@ -49,31 +49,46 @@ export const HomeScreen = () => {
   React.useEffect(() => {
     const getAsyncItems = async () => {
       try {
-        let newData: string | null = "";
-        newData = await AsyncStorage.getItem("filtered-markers");
-        newData && setAsyncMarkers(JSON.parse(newData));
+        const newData = await AsyncStorage.getItem("filtered-markers");
+        if (newData) {
+          setAsyncMarkers(JSON.parse(newData));
+        }
       } catch (error) {
+        setNetworkRequestFailed(true);
         console.error("Failed to get data:", error);
       }
     };
 
-    getAsyncItems();
+    const fetchData = async () => {
+      await getAsyncItems();
 
-    fetch("http://localhost:3000/pins")
-      .then((response) => {
+      const state = await NetInfo.fetch();
+      if (!state.isConnected) {
+        setNetworkRequestFailed(true);
+        console.log("No internet connection");
+        setData(asyncMarkers);
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const response = await fetch("http://localhost:3000/pins");
         if (!response.ok) {
-          throw new Error("Network response failed");
+          setNetworkRequestFailed(true);
+          console.log("Network request failed");
         }
-        return response.json();
-      })
-      .then((data) => {
-        setData(data);
+        const fetchedData = await response.json();
+        setData(fetchedData);
+      } catch (error) {
+        setNetworkRequestFailed(true);
+        console.log("Error fetching data:", error);
+        setData(asyncMarkers);
+      } finally {
         setLoading(false);
-      })
-      .catch((error) => {
-        setError(error.message);
-        setLoading(false);
-      });
+      }
+    };
+
+    fetchData();
   }, []);
 
   const filteredMarkers = React.useMemo(() => {
@@ -112,18 +127,15 @@ export const HomeScreen = () => {
     return <ActivityIndicator size="large" color="#0000ff" />;
   }
 
-  if (error) {
-    return <Text>Error: {error}</Text>;
-  }
-
   return (
     <HomeWrapper>
-      {!netInfo && (
+      {(!NetInfo || networkRequestFailed) && (
         <NoInternetConnectionAlert>
           <Ionicons name="alert-circle-outline" size={21} />
-          <AlertText>
-            No internet connection. Information might be outdated.
-          </AlertText>
+          <View>
+            <AlertText>No internet connection.</AlertText>
+            <AlertText>Information might be outdated.</AlertText>
+          </View>
         </NoInternetConnectionAlert>
       )}
       <StyledMapView

@@ -15,7 +15,6 @@ export const NoInternetConnectionAlert = styled(View)`
   flex-wrap: wrap;
   height: 40px;
   background-color: salmon;
-  justify-content: center;
   align-items: center;
   flex-direction: row;
   padding-horizontal: 4px;
