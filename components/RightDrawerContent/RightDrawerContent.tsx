@@ -1,5 +1,5 @@
 import React from "react";
-import Checkbox from "expo-checkbox";
+import { useSelector } from "react-redux";
 import {
   RightDrawerWrapper,
   Title,
@@ -7,18 +7,25 @@ import {
   FilterItem,
   Subtitle,
   StyledCheckbox,
+  ApplyButton,
+  ButtonText,
 } from "./styles";
 import { ConnectorStatus, ConnectorType } from "../../types";
+import { RootState } from "../../app/store";
 
-type FilterKeys = "type2" | "type3";
+export const RightDrawerContent = ({ onPress }: any) => {
+  const [connectorTypes, setConnectorTypes] = React.useState<string[]>([]);
+  const [connectorStatuses, setConnectorStatuses] = React.useState<string[]>(
+    []
+  );
 
-export const RightDrawerContent = () => {
-  const [connectorTypes, setConnectorTypes] = React.useState<
-    Record<string, boolean>
-  >({});
-  const [connectorStatuses, setConnectorStatuses] = React.useState<
-    Record<string, boolean>
-  >({});
+  const handleCheckboxChange = (setConnector: any, value: string) => {
+    setConnector((prev: string[]) =>
+      prev.includes(value)
+        ? prev.filter((item) => item !== value)
+        : [...prev, value]
+    );
+  };
 
   return (
     <RightDrawerWrapper>
@@ -27,13 +34,8 @@ export const RightDrawerContent = () => {
       {Object.entries(ConnectorType).map(([key, value]) => (
         <OptionsWrapper key={key}>
           <StyledCheckbox
-            value={connectorTypes[value] || false}
-            onValueChange={() =>
-              setConnectorTypes((prev) => ({
-                ...prev,
-                [value]: !prev[value],
-              }))
-            }
+            value={connectorTypes.includes(value)}
+            onValueChange={() => handleCheckboxChange(setConnectorTypes, value)}
           />
           <FilterItem>{value}</FilterItem>
         </OptionsWrapper>
@@ -42,17 +44,17 @@ export const RightDrawerContent = () => {
       {Object.entries(ConnectorStatus).map(([key, value]) => (
         <OptionsWrapper key={key}>
           <StyledCheckbox
-            value={connectorStatuses[value] || false}
+            value={connectorStatuses.includes(value)}
             onValueChange={() =>
-              setConnectorStatuses((prev) => ({
-                ...prev,
-                [value]: !prev[value],
-              }))
+              handleCheckboxChange(setConnectorStatuses, value)
             }
           />
           <FilterItem>{value}</FilterItem>
         </OptionsWrapper>
       ))}
+      <ApplyButton onPress={() => onPress(connectorTypes, connectorStatuses)}>
+        <ButtonText>Apply</ButtonText>
+      </ApplyButton>
     </RightDrawerWrapper>
   );
 };

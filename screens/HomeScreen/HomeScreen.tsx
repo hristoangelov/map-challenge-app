@@ -1,14 +1,14 @@
 import React from "react";
 import { ActivityIndicator, Text, Platform, View } from "react-native";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
 import BottomSheet from "@gorhom/bottom-sheet";
 
 import { HomeWrapper, StyledMapView } from "./styles";
-import { Pin } from "../../types";
+import { Connector, Pin } from "../../types";
 import { CustomMarker, PinBottomSheet } from "../../components/Home";
 import { loadSettings } from "../../features/settingsSlice";
-import { AppDispatch } from "../../app/store";
+import { AppDispatch, RootState } from "../../app/store";
 import { isPinWithinBounds } from "../../utils";
 
 export const HomeScreen = () => {
@@ -25,6 +25,12 @@ export const HomeScreen = () => {
   };
   const [mapRegion, setMapRegion] = React.useState<Region>(initialRegion);
   const dispatch = useDispatch<AppDispatch>();
+  const connectorTypes = useSelector(
+    (state: RootState) => state.filter.connectorTypes
+  );
+  const connectorStatuses = useSelector(
+    (state: RootState) => state.filter.connectorStatuses
+  );
 
   React.useLayoutEffect(() => {
     dispatch(loadSettings());
@@ -50,8 +56,20 @@ export const HomeScreen = () => {
 
   const filteredMarkers = React.useMemo(() => {
     if (!data || !mapRegion) return [];
-    return data.filter((pin) => isPinWithinBounds(pin, mapRegion));
-  }, [data, mapRegion]);
+    const filtered = data.filter((pin) => isPinWithinBounds(pin, mapRegion));
+    return filtered.filter((pin) => {
+      return pin.connectors.some((connector: Connector) => {
+        const matchesConnectorType =
+          connectorTypes.length === 0 ||
+          connectorTypes.includes(connector.type);
+
+        const matchesConnectorStatus =
+          connectorStatuses.length === 0 ||
+          connectorStatuses.includes(connector.status);
+        return matchesConnectorType && matchesConnectorStatus;
+      });
+    });
+  }, [data, mapRegion, connectorTypes]);
 
   const onPinPress = (pin: Pin) => {
     bottomSheetRef.current?.expand();

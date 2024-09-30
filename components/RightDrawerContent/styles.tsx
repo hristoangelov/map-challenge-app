@@ -1,5 +1,5 @@
 import Checkbox from "expo-checkbox";
-import { View, Text } from "react-native";
+import { View, Text, TouchableOpacity } from "react-native";
 import styled from "styled-components";
 
 export const RightDrawerWrapper = styled(View)`
@@ -33,4 +33,16 @@ export const Subtitle = styled(Text)`
 export const StyledCheckbox = styled(Checkbox)`
   height: 24px;
   width: 24px;
+`;
+
+export const ApplyButton = styled(TouchableOpacity)`
+  background-color: #2c7df6;
+  padding: 8px;
+  align-items: center;
+  margin-top: 16px;
+`;
+
+export const ButtonText = styled(Text)`
+  font-size: 16px;
+  font-weight: 500;
 `;

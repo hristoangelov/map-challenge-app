@@ -1,6 +1,6 @@
 export enum ConnectorType {
   J1772 = "J1772",
-  Type2 = "Type2",
+  Type2 = "Type 2",
   CCS2 = "CCS 2",
   Type3 = "Type 3",
 }

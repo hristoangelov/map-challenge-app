@@ -17,15 +17,20 @@ const initialState: SettingsState = {
 export const loadSettings = createAsyncThunk<SettingsState>(
   "settings/loadSettings",
   async () => {
-    const pinIcon = await AsyncStorage.getItem("pinIcon");
-    const pinColour = await AsyncStorage.getItem("pinColour");
-    const pinSize = await AsyncStorage.getItem("pinSize");
+    try {
+      const pinIcon = await AsyncStorage.getItem("pinIcon");
+      const pinColour = await AsyncStorage.getItem("pinColour");
+      const pinSize = await AsyncStorage.getItem("pinSize");
 
-    return {
-      pinIcon: (pinIcon as keyof typeof Ionicons.glyphMap) || "pin-outline",
-      pinColour: pinColour || "red",
-      pinSize: pinSize ? parseInt(pinSize) : 30,
-    };
+      return {
+        pinIcon: (pinIcon as keyof typeof Ionicons.glyphMap) || "pin-outline",
+        pinColour: pinColour || "red",
+        pinSize: pinSize ? parseInt(pinSize) : 30,
+      };
+    } catch (error) {
+      console.error(error);
+      return initialState;
+    }
   }
 );
 

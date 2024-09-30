@@ -1,5 +1,5 @@
 import * as React from "react";
-import { Provider } from "react-redux";
+import { Provider, useDispatch } from "react-redux";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 
@@ -7,7 +7,11 @@ import { HomeScreen } from "./screens/HomeScreen";
 import { SettingsScreen } from "./screens/SettingsScreen";
 import { CustomHeaderButton } from "./components/Home";
 import { RightDrawerContent } from "./components/RightDrawerContent";
-import { store } from "./app/store";
+import { AppDispatch, store } from "./app/store";
+import {
+  setConnectorStatuses,
+  setConnectorTypes,
+} from "./features/filterSlice";
 
 const LeftDrawer = createDrawerNavigator();
 const RightDrawer = createDrawerNavigator();
@@ -49,10 +53,18 @@ function LeftDrawerScreen({ navigation }: any) {
 }
 
 function RightDrawerScreen() {
+  const dispatch = useDispatch<AppDispatch>();
   return (
     <RightDrawer.Navigator
       id="RightDrawer"
-      drawerContent={() => <RightDrawerContent />}
+      drawerContent={() => (
+        <RightDrawerContent
+          onPress={(types: string[], statuses: string[]) => {
+            dispatch(setConnectorTypes(types));
+            dispatch(setConnectorStatuses(statuses));
+          }}
+        />
+      )}
       screenOptions={{
         drawerPosition: "right",
         headerShown: false,
