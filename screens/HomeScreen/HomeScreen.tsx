@@ -5,6 +5,7 @@ import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
 import BottomSheet from "@gorhom/bottom-sheet";
 import { useNetInfo } from "@react-native-community/netinfo";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import {
   HomeWrapper,
@@ -22,6 +23,7 @@ export const HomeScreen = () => {
   const [data, setData] = React.useState<Pin[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState(null);
+  const [asyncMarkers, setAsyncMarkers] = React.useState<[]>([]);
   const [selectedPin, setSelectedPin] = React.useState<Pin>();
   const bottomSheetRef = React.useRef<BottomSheet>(null);
   const initialRegion: Region = {
@@ -45,10 +47,22 @@ export const HomeScreen = () => {
   }, [dispatch]);
 
   React.useEffect(() => {
+    const getAsyncItems = async () => {
+      try {
+        let newData: string | null = "";
+        newData = await AsyncStorage.getItem("filtered-markers");
+        newData && setAsyncMarkers(JSON.parse(newData));
+      } catch (error) {
+        console.error("Failed to get data:", error);
+      }
+    };
+
+    getAsyncItems();
+
     fetch("http://localhost:3000/pins")
       .then((response) => {
         if (!response.ok) {
-          throw new Error("Network response was not ok");
+          throw new Error("Network response failed");
         }
         return response.json();
       })
@@ -77,7 +91,17 @@ export const HomeScreen = () => {
         return matchesConnectorType && matchesConnectorStatus;
       });
     });
-  }, [data, mapRegion, connectorTypes]);
+  }, [data, mapRegion, connectorTypes, connectorStatuses]);
+
+  React.useEffect(() => {
+    const setMarkers = async () => {
+      await AsyncStorage.setItem(
+        "filtered-markers",
+        JSON.stringify(filteredMarkers)
+      );
+    };
+    filteredMarkers && setMarkers();
+  }, [filteredMarkers]);
 
   const onPinPress = (pin: Pin) => {
     bottomSheetRef.current?.expand();
@@ -97,7 +121,9 @@ export const HomeScreen = () => {
       {!netInfo && (
         <NoInternetConnectionAlert>
           <Ionicons name="alert-circle-outline" size={21} />
-          <AlertText>No internet connection. Information might be outdated.</AlertText>
+          <AlertText>
+            No internet connection. Information might be outdated.
+          </AlertText>
         </NoInternetConnectionAlert>
       )}
       <StyledMapView
@@ -107,14 +133,12 @@ export const HomeScreen = () => {
         initialRegion={initialRegion}
         onRegionChangeComplete={(region) => setMapRegion(region)}
       >
-        {filteredMarkers &&
-          filteredMarkers.map((pin, index) => (
-            <CustomMarker
-              key={index}
-              pin={pin}
-              onPress={() => onPinPress(pin)}
-            />
-          ))}
+        {(filteredMarkers && filteredMarkers.length > 0
+          ? filteredMarkers
+          : asyncMarkers
+        ).map((pin: Pin, index: React.Key) => (
+          <CustomMarker key={index} pin={pin} onPress={() => onPinPress(pin)} />
+        ))}
       </StyledMapView>
       <BottomSheet
         ref={bottomSheetRef}
