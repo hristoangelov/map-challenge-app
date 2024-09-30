@@ -3,8 +3,15 @@ import { ActivityIndicator, Text, Platform, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { PROVIDER_GOOGLE, PROVIDER_DEFAULT, Region } from "react-native-maps";
 import BottomSheet from "@gorhom/bottom-sheet";
+import { useNetInfo } from "@react-native-community/netinfo";
+import Ionicons from "@expo/vector-icons/Ionicons";
 
-import { HomeWrapper, StyledMapView } from "./styles";
+import {
+  HomeWrapper,
+  StyledMapView,
+  NoInternetConnectionAlert,
+  AlertText,
+} from "./styles";
 import { Connector, Pin } from "../../types";
 import { CustomMarker, PinBottomSheet } from "../../components/Home";
 import { loadSettings } from "../../features/settingsSlice";
@@ -31,6 +38,7 @@ export const HomeScreen = () => {
   const connectorStatuses = useSelector(
     (state: RootState) => state.filter.connectorStatuses
   );
+  const netInfo = useNetInfo();
 
   React.useLayoutEffect(() => {
     dispatch(loadSettings());
@@ -86,6 +94,12 @@ export const HomeScreen = () => {
 
   return (
     <HomeWrapper>
+      {!netInfo && (
+        <NoInternetConnectionAlert>
+          <Ionicons name="alert-circle-outline" size={21} />
+          <AlertText>No internet connection. Information might be outdated.</AlertText>
+        </NoInternetConnectionAlert>
+      )}
       <StyledMapView
         provider={
           Platform.OS === "android" ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
