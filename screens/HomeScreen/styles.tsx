@@ -25,3 +25,9 @@ export const AlertText = styled(Text)`
   font-weight: 600;
   padding-left: 4px;
 `;
+
+export const ActivityIndicatorWrapper = styled(View)`
+  flex: 1;
+  justify-content: center;
+  background-color: #fff;
+`;

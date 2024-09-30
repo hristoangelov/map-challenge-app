@@ -12,6 +12,7 @@ import {
   StyledMapView,
   NoInternetConnectionAlert,
   AlertText,
+  ActivityIndicatorWrapper,
 } from "./styles";
 import { Connector, Pin } from "../../types";
 import { CustomMarker, PinBottomSheet } from "../../components/Home";
@@ -124,7 +125,11 @@ export const HomeScreen = () => {
   };
 
   if (loading) {
-    return <ActivityIndicator size="large" color="#0000ff" />;
+    return (
+      <ActivityIndicatorWrapper>
+        <ActivityIndicator size="large" color="#2c7df6" style={{ transform: [{ scaleX: 2 }, { scaleY: 2 }] }}/>
+      </ActivityIndicatorWrapper>
+    );
   }
 
   return (
