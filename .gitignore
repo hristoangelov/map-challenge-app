@@ -18,6 +18,11 @@ yarn-error.log
 # Env
 .envrc.local
 
+# coverage
+coverage/
+*.lcov
+*.json
+
 # Emacs
 *~
 

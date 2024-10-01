@@ -28,7 +28,6 @@ function LeftDrawerScreen({ navigation }: any) {
         options={() => ({
           headerRight: () => (
             <CustomHeaderButton
-              isRightButton={true}
               iconName="funnel-outline"
               onPress={() => navigation.openDrawer()}
             />
@@ -41,7 +40,6 @@ function LeftDrawerScreen({ navigation }: any) {
         options={() => ({
           headerRight: () => (
             <CustomHeaderButton
-              isRightButton={true}
               iconName="funnel-outline"
               onPress={() => navigation.openDrawer()}
             />

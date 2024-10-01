@@ -2,10 +2,8 @@ import { TouchableOpacity, View, Text } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import styled from "styled-components";
 
-export const HeaderButton = styled(TouchableOpacity)<{
-  isRightButton: boolean;
-}>`
-  margin-${(props) => (props.isRightButton ? "right" : "left")}: 12px;
+export const HeaderButton = styled(TouchableOpacity)`
+  margin-right: 12px;
 `;
 
 export const BottomSheetWrapper = styled(ScrollView)`

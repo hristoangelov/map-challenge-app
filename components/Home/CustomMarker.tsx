@@ -22,6 +22,7 @@ export const CustomMarker = ({ pin, onPress }: CustomMarkerProps) => {
       onPress={onPress}
       onPressIn={() => setOpacity(0.3)}
       onPressOut={() => setOpacity(1)}
+      testID="marker"
     >
       <Marker
         coordinate={{
