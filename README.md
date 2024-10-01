@@ -1,8 +1,8 @@
 # map-challenge-app
 
-This is a React Native with Typescript mobile application done on Expo which consists of two screens and two drawer menus.
+This is a React Native with Typescript mobile application developed on Expo which consists of two screens and two drawer menus.
 
-The app can be run using `yarn` and then `npx expo start` from map-challenge-app directory.
+The app can be run using `yarn` and then `npx expo start` from map-challenge-app directory. To run the test - `yarn test` which will also show the coverage.
 
 ## The app consists of home screen:
 
