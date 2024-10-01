@@ -17,9 +17,10 @@ export const PinColourItem = ({ colour }: PinColourItemProps) => {
       <ColourButton
         colour={colour}
         onPress={() => dispatch(setPinColour(colour))}
+        testID="colour-button"
       >
       {colour === pinColour && (
-        <TickIcon>
+        <TickIcon testID="tick-icon">
           <Ionicons name="checkmark" size={12} color="white" />
         </TickIcon>
       )}

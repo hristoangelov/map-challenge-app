@@ -1,5 +1,4 @@
 import React from "react";
-import { useSelector } from "react-redux";
 import {
   RightDrawerWrapper,
   Title,
@@ -11,7 +10,6 @@ import {
   ButtonText,
 } from "./styles";
 import { ConnectorStatus, ConnectorType } from "../../types";
-import { RootState } from "../../app/store";
 
 export const RightDrawerContent = ({ onPress }: any) => {
   const [connectorTypes, setConnectorTypes] = React.useState<string[]>([]);
@@ -34,6 +32,7 @@ export const RightDrawerContent = ({ onPress }: any) => {
       {Object.entries(ConnectorType).map(([key, value]) => (
         <OptionsWrapper key={key}>
           <StyledCheckbox
+            testID={`checkbox-${key}`}
             value={connectorTypes.includes(value)}
             onValueChange={() => handleCheckboxChange(setConnectorTypes, value)}
           />

@@ -14,14 +14,10 @@ export const PinIconItem = ({ name }: PinIconItemProps) => {
   const pinIcon = useSelector((state: RootState) => state.settings.pinIcon);
 
   return (
-    <IconButton>
-      <Ionicons
-        name={name}
-        size={40}
-        onPress={() => dispatch(setPinIcon(name))}
-      />
+    <IconButton onPress={() => dispatch(setPinIcon(name))} testID="icon-button">
+      <Ionicons name={name} size={40} />
       {name === pinIcon && (
-        <TickIcon>
+        <TickIcon testID="tick-icon">
           <Ionicons name="checkmark" size={12} color="white" />
         </TickIcon>
       )}
