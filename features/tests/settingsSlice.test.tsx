@@ -5,7 +5,7 @@ import settingsReducer, {
   setPinColour,
   setPinSize,
   loadSettings,
-} from "../settingsSlice"; // Adjust the import path as necessary
+} from "../settingsSlice"; 
 import { configureStore } from "@reduxjs/toolkit";
 
 describe("settingsSlice", () => {
@@ -16,20 +16,20 @@ describe("settingsSlice", () => {
   };
 
   beforeEach(() => {
-    jest.clearAllMocks(); // Clear previous mocks
+    jest.clearAllMocks();
   });
 
   it("should load settings successfully", async () => {
     (AsyncStorage.getItem as jest.Mock)
-      .mockResolvedValueOnce("pin-sharp") // For pinIcon
-      .mockResolvedValueOnce("green") // For pinColour
-      .mockResolvedValueOnce("50"); // For pinSize
+      .mockResolvedValueOnce("pin-sharp") 
+      .mockResolvedValueOnce("green") 
+      .mockResolvedValueOnce("50"); 
 
     const store = configureStore({ reducer: { settings: settingsReducer } });
     await store.dispatch(loadSettings());
 
     const state = store.getState().settings;
-    expect(state.pinIcon).toEqual("pin-sharp"); // Ensure this is a valid icon in Ionicons
+    expect(state.pinIcon).toEqual("pin-sharp");
     expect(state.pinColour).toEqual("green");
     expect(state.pinSize).toEqual(50);
   });
@@ -54,7 +54,7 @@ describe("settingsSlice", () => {
   });
 
   it("should handle setPinIcon", async () => {
-    const newIcon = "pin-sharp"; // A valid icon from Ionicons
+    const newIcon = "pin-sharp";
     const action = setPinIcon(newIcon);
     const result = settingsReducer(initialState, action);
 
